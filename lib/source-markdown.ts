@@ -1,12 +1,13 @@
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import matter from "gray-matter";
-import moment from "moment";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeFormat from "rehype-format";
 import rehypeStringify from "rehype-stringify";
+
+import { getDateFormats } from "./utils";
 
 const POSTS_PATH = join(process.cwd(), "content/posts");
 
@@ -87,24 +88,6 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
   const entries = Promise.all(entryPromises);
 
   return entries;
-}
-
-function getDateFormats(date: string | number): {
-  year: string;
-  displayDate: string;
-  displayDateSmall: string;
-} {
-  const momentDate = moment(date);
-
-  const year = momentDate.format("YYYY");
-  const displayDate = momentDate.format("MMMM Do, YYYY");
-  const displayDateSmall = momentDate.format("MMM D");
-
-  return {
-    year,
-    displayDate,
-    displayDateSmall,
-  };
 }
 
 const MD_HIGHLIGHTS_PATH = join(process.cwd(), "content/highlights/markdown");

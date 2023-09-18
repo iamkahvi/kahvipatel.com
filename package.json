@@ -9,6 +9,8 @@
     "build:static": "next build && next out"
   },
   "dependencies": {
+    "@contentful/rich-text-html-renderer": "^16.1.2",
+    "@contentful/rich-text-types": "^16.3.0",
     "@types/react": "^18.2.21",
     "gray-matter": "^4.0.3",
     "moment": "^2.29.4",
