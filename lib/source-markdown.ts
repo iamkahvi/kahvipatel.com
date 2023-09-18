@@ -10,6 +10,34 @@ import rehypeStringify from "rehype-stringify";
 import { getDateFormats } from "./utils";
 
 const POSTS_PATH = join(process.cwd(), "content/posts");
+const ABOUT_PATH = join(process.cwd(), "content/about/about.md");
+
+export interface AboutPageData {
+  title: string;
+  html: string;
+}
+
+export async function getAboutPageData(): Promise<AboutPageData> {
+  const file = Bun.file(ABOUT_PATH);
+  const text = await file.text();
+
+  const { data, content } = matter(text);
+  const { title } = data;
+
+  const html = String(
+    await unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(rehypeFormat)
+      .use(rehypeStringify)
+      .process(content)
+  );
+
+  return {
+    title,
+    html,
+  };
+}
 
 export interface BlogPost {
   title: string;
@@ -64,7 +92,7 @@ export interface BlogPostEntry {
 export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
   const paths = await readdir(POSTS_PATH);
 
-  const entryPromises = paths.map<Promise<BlogPostEntry>>(
+  const entryPromises = paths.map<Promise<BlogPostEntry & { date: Date }>>(
     async (path: string) => {
       const file = Bun.file(join(POSTS_PATH, path));
       const text = await file.text();
@@ -77,17 +105,21 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
       return {
         title,
         year,
+        date,
         displayDate,
         displayDateSmall,
-        description,
+        description: description || "",
         slug: path,
       };
     }
   );
 
-  const entries = Promise.all(entryPromises);
+  const entries = (await Promise.all(entryPromises)).sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
-  return entries;
+  // Removing the date property
+  return entries.map(({ date, ...rest }) => rest);
 }
 
 const MD_HIGHLIGHTS_PATH = join(process.cwd(), "content/highlights/markdown");
