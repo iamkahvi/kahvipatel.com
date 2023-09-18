@@ -1,3 +1,4 @@
-import { getBlogPostEntries } from "./source-markdown";
+import { getBlogPostEntries, getAboutPageData } from "./source-markdown";
+import { getBookShelfData } from "./source-contentful";
 
-console.log(await getBlogPostEntries());
+console.log(await getAboutPageData());
