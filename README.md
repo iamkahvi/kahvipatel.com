@@ -1,4 +1,7 @@
-# blog-rebuild
+# kahvipatel.com
+
+## [THIS PROJECT IS IN PROGRESS]
+Refer to [this repo](https://github.com/iamkahvi/gatsby-blog) for the current iteration of the blog.
 
 To install dependencies:
 
@@ -9,7 +12,5 @@ bun install
 To run:
 
 ```bash
-bun run index.ts
+bun run dev
 ```
-
-This project was created using `bun init` in bun v1.0.0. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
