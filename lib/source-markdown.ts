@@ -2,31 +2,63 @@ import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import matter from "gray-matter";
 import moment from "moment";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import rehypeFormat from "rehype-format";
+import rehypeStringify from "rehype-stringify";
+
+const POSTS_PATH = join(process.cwd(), "content/posts");
 
 export interface BlogPost {
-  excerpt: string;
+  title: string;
   html: string;
   frontmatter: {
-    title: string;
+    year: string;
     displayDate: string;
     displayDateSmall: string;
     description: string;
   };
 }
 
-export function getBlogPost(slug: string): BlogPost {
-  return {};
+export async function getBlogPost(slug: string): Promise<BlogPost> {
+  const file = Bun.file(join(POSTS_PATH, slug));
+  const text = await file.text();
+
+  const { data, content } = matter(text);
+  const { title, date, description } = data;
+
+  const html = String(
+    await unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(rehypeFormat)
+      .use(rehypeStringify)
+      .process(content)
+  );
+
+  const { year, displayDate, displayDateSmall } = getDateFormats(date);
+
+  return {
+    title,
+    html,
+    frontmatter: {
+      year,
+      displayDate,
+      displayDateSmall,
+      description,
+    },
+  };
 }
 
 export interface BlogPostEntry {
+  title: string;
   year: string;
   displayDate: string;
   displayDateSmall: string;
-  title: string;
   description: string;
+  slug: string;
 }
-
-const POSTS_PATH = join(process.cwd(), "content/posts");
 
 export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
   const paths = await readdir(POSTS_PATH);
@@ -39,11 +71,7 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
       const frontMatter = matter(text);
       const { title, date, description } = frontMatter.data;
 
-      const momentDate = moment(date);
-
-      const year = momentDate.format("YYYY");
-      const displayDate = momentDate.format("MMMM Do, YYYY");
-      const displayDateSmall = momentDate.format("MMM D");
+      const { year, displayDate, displayDateSmall } = getDateFormats(date);
 
       return {
         title,
@@ -51,6 +79,7 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
         displayDate,
         displayDateSmall,
         description,
+        slug: path,
       };
     }
   );
@@ -58,6 +87,24 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
   const entries = Promise.all(entryPromises);
 
   return entries;
+}
+
+function getDateFormats(date: string): {
+  year: string;
+  displayDate: string;
+  displayDateSmall: string;
+} {
+  const momentDate = moment(date);
+
+  const year = momentDate.format("YYYY");
+  const displayDate = momentDate.format("MMMM Do, YYYY");
+  const displayDateSmall = momentDate.format("MMM D");
+
+  return {
+    year,
+    displayDate,
+    displayDateSmall,
+  };
 }
 
 type Highlight = {
@@ -74,19 +121,4 @@ type Highlight = {
 
 export function getMarkdownHighlights(): Highlight[] {
   return [];
-}
-
-/**
- * @param {string | Buffer | URL} directoryPath
- * @returns {Promise<string[]>} - Array of long file paths
- */
-async function getFiles(directoryPath: string): Promise<string[]> {
-  try {
-    const fileNames = await readdir(directoryPath); // returns a JS array of just short/local file-names, not paths.
-    const filePaths = fileNames.map((fn) => join(directoryPath, fn));
-    return filePaths;
-  } catch (err) {
-    console.error(err); // depending on your application, this `catch` block (as-is) may be inappropriate; consider instead, either not-catching and/or re-throwing a new Error with the previous err attached.
-    return [];
-  }
 }
