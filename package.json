@@ -12,11 +12,13 @@
     "@contentful/rich-text-html-renderer": "^16.1.2",
     "@contentful/rich-text-types": "^16.3.0",
     "@types/react": "^18.2.21",
+    "@types/react-helmet": "^6.1.6",
     "gray-matter": "^4.0.3",
     "moment": "^2.29.4",
     "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "rehype-format": "^5.0.0",
     "rehype-stringify": "^10.0.0",
     "remark-parse": "^10.0.2",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@types/node": "20.6.2",
     "bun-types": "latest",
+    "sass": "^1.67.0",
     "typescript": "5.2.2"
   },
   "peerDependencies": {
