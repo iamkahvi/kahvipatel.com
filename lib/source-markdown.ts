@@ -89,7 +89,7 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
   return entries;
 }
 
-function getDateFormats(date: string): {
+function getDateFormats(date: string | number): {
   year: string;
   displayDate: string;
   displayDateSmall: string;
@@ -107,7 +107,111 @@ function getDateFormats(date: string): {
   };
 }
 
-type Highlight = {
+const MD_HIGHLIGHTS_PATH = join(process.cwd(), "content/highlights/markdown");
+const JSON_HIGHLIGHTS_PATH = join(process.cwd(), "content/highlights/json");
+
+export interface HighlightPostEntry {
+  title: string;
+  slug: string;
+}
+
+export async function getHighlightEntries(): Promise<HighlightPostEntry[]> {
+  const mdPaths = (await readdir(MD_HIGHLIGHTS_PATH)).map((path) =>
+    join(MD_HIGHLIGHTS_PATH, path)
+  );
+  const jsonPaths = (await readdir(JSON_HIGHLIGHTS_PATH)).map((path) =>
+    join(JSON_HIGHLIGHTS_PATH, path)
+  );
+
+  const paths = [...mdPaths, ...jsonPaths];
+
+  const entryPromises = paths.flatMap<Promise<HighlightPostEntry[]>>(
+    async (path: string) => {
+      const ext = path.split(".").pop();
+      const name = path.split("/").pop() || "";
+      const file = Bun.file(path);
+
+      switch (ext) {
+        case "json": {
+          const json = await file.json();
+
+          const { book: title = "" } = json[0];
+
+          return [
+            {
+              title,
+              slug: name,
+            },
+          ];
+        }
+        case "md": {
+          const text = await file.text();
+
+          const frontMatter = matter(text);
+          const { title } = frontMatter.data;
+
+          return [
+            {
+              title,
+              slug: name,
+            },
+          ];
+        }
+        default: {
+          return [];
+        }
+      }
+    }
+  );
+
+  const entries = (await Promise.all(entryPromises)).flat();
+
+  return entries;
+}
+
+export interface HighlightPostMarkdown {
+  title: string;
+  displayDate: string;
+  displayDateSmall: string;
+  html: string;
+}
+
+export async function getMarkdownHighlight(
+  slug: string
+): HighlightPostMarkdown {
+  const file = Bun.file(join(MD_HIGHLIGHTS_PATH, slug));
+  const text = await file.text();
+
+  const { data, content } = matter(text);
+  const { title, date } = data;
+
+  const html = String(
+    await unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(rehypeFormat)
+      .use(rehypeStringify)
+      .process(content)
+  );
+
+  const { displayDate, displayDateSmall } = getDateFormats(date);
+
+  return {
+    title,
+    html,
+    displayDate,
+    displayDateSmall,
+  };
+}
+
+export interface HighlightPostJson {
+  title: string;
+  displayDate: string;
+  displayDateSmall: string;
+  highlights: HighlightJson[];
+}
+
+export interface HighlightJson {
   book: string;
   author: string;
   quote: string;
@@ -117,8 +221,23 @@ type Highlight = {
     end: number;
   };
   dateAdded: number;
-};
+}
 
-export function getMarkdownHighlights(): Highlight[] {
-  return [];
+export async function getJsonHighlight(
+  slug: string
+): Promise<HighlightPostJson> {
+  const file = Bun.file(join(JSON_HIGHLIGHTS_PATH, slug));
+  const json = await file.json();
+
+  const { book: bookTitle, author, dateAdded: epochSeconds } = json[0];
+  const title = `${bookTitle} by ${author}`;
+
+  const { displayDate, displayDateSmall } = getDateFormats(epochSeconds);
+
+  return {
+    title,
+    displayDate,
+    displayDateSmall,
+    highlights: json,
+  };
 }
