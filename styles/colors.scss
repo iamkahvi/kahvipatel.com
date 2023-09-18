@@ -1,0 +1,40 @@
+// Classic
+// $c-main: #ff8552;
+// $c-second:#297373;
+// $c-third: #eee;
+
+// Bubblegum
+// $c-main: #FFA9A3;
+// $c-second:#5C95FF;
+// $c-third: #eeee;
+
+// Pastel
+$c-main: #FFA9A3;
+$c-second:#7D938A;
+$c-third: #c9dfe6;
+
+// Artic
+// $c-main: #7CDEDC;
+// $c-second:#6C698D;
+// $c-third: #E8C1C5;
+
+// Forest
+// $c-main: #B5DFCA;
+// $c-second:#627264;
+// $c-third: #A1CDA8;
+
+// Purple
+// $c-main: #40C9A2;
+// $c-second:#B88C9E;
+// $c-third: #8EB8E5;
+
+$c-background: white;
+$c-main-selection: #FFA9A350;
+
+:root { 
+    --c-main: #{$c-main};
+    --c-second: #{$c-second};
+    --c-third: #{$c-third};
+    --cc-background: #{$c-background};
+    --c-main-selection: #{$c-main-selection};
+}
