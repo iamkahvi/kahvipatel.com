@@ -1,24 +1,19 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import { siteMetadata } from "../site_metadata";
 
 export interface SEOProps {
-  title?: string;
+  title: string;
   description?: string;
-  image?: string;
-  article?: boolean;
-  lang?: string;
-  meta?: any;
 }
 
-function SEO({ description, lang, meta, title }: SEOProps) {
+function SEO({ title, description }: SEOProps) {
   const metaDescription = description || siteMetadata.description;
 
   return (
     <Helmet
       htmlAttributes={{
-        lang,
+        lang: "en",
       }}
       title={title}
       titleTemplate={`%s`}
@@ -55,22 +50,9 @@ function SEO({ description, lang, meta, title }: SEOProps) {
           name: `twitter:description`,
           content: metaDescription,
         },
-      ].concat(meta)}
+      ]}
     ></Helmet>
   );
 }
-
-SEO.defaultProps = {
-  lang: `en`,
-  meta: [],
-  description: ``,
-};
-
-SEO.propTypes = {
-  description: PropTypes.string,
-  lang: PropTypes.string,
-  meta: PropTypes.arrayOf(PropTypes.object),
-  title: PropTypes.string.isRequired,
-};
 
 export default SEO;

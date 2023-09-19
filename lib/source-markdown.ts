@@ -89,34 +89,45 @@ export interface BlogPostEntry {
   slug: string;
 }
 
+type BlogPostEntryWithDate = BlogPostEntry & { date: Date };
+
 export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
   const paths = await readdir(POSTS_PATH);
 
-  const entryPromises = paths.map<Promise<BlogPostEntry & { date: Date }>>(
+  const entryPromises = paths.flatMap<Promise<BlogPostEntryWithDate[]>>(
     async (path: string) => {
       const file = Bun.file(join(POSTS_PATH, path));
       const text = await file.text();
 
       const frontMatter = matter(text);
-      const { title, date, description } = frontMatter.data;
+      const { title, date, description, layout, published } = frontMatter.data;
+
+      if (layout !== "post" || published === false) return [];
 
       const { year, displayDate, displayDateSmall } = getDateFormats(date);
 
-      return {
-        title,
-        year,
-        date,
-        displayDate,
-        displayDateSmall,
-        description: description || "",
-        slug: path,
-      };
+      const slug = title
+        .replace(/[!'’.()*]/g, "")
+        .replace(/\s+/g, "-")
+        .toLowerCase();
+
+      return [
+        {
+          title,
+          year,
+          date,
+          displayDate,
+          displayDateSmall,
+          description: description || "",
+          slug,
+        },
+      ];
     }
   );
 
-  const entries = (await Promise.all(entryPromises)).sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  const entries = (await Promise.all(entryPromises))
+    .flat()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   // Removing the date property
   return entries.map(({ date, ...rest }) => rest);
@@ -193,7 +204,7 @@ export interface HighlightPostMarkdown {
 
 export async function getMarkdownHighlight(
   slug: string
-): HighlightPostMarkdown {
+): Promise<HighlightPostMarkdown> {
   const file = Bun.file(join(MD_HIGHLIGHTS_PATH, slug));
   const text = await file.text();
 
