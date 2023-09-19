@@ -1,5 +1,5 @@
 import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, parse } from "node:path";
 import matter from "gray-matter";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
@@ -51,7 +51,7 @@ export interface BlogPost {
 }
 
 export async function getBlogPost(slug: string): Promise<BlogPost> {
-  const file = Bun.file(join(POSTS_PATH, slug));
+  const file = Bun.file(join(POSTS_PATH, slug + ".md"));
   const text = await file.text();
 
   const { data, content } = matter(text);
@@ -106,11 +106,6 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
 
       const { year, displayDate, displayDateSmall } = getDateFormats(date);
 
-      const slug = title
-        .replace(/[!'’.()*]/g, "")
-        .replace(/\s+/g, "-")
-        .toLowerCase();
-
       return [
         {
           title,
@@ -119,7 +114,7 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
           displayDate,
           displayDateSmall,
           description: description || "",
-          slug,
+          slug: parse(path).name,
         },
       ];
     }
