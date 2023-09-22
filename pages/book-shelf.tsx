@@ -6,14 +6,14 @@ import {
   BookNode,
 } from "../lib/source-contentful";
 import { GetStaticProps } from "next";
-import { yearMap } from "./utils";
+import { yearMap } from "../lib/utils";
 
 export default function BookList({ bookShelf }: { bookShelf: BookShelfData }) {
   const [search, setSearch] = useState("");
 
   const { books, introHtml, title } = bookShelf;
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     setSearch(e.target.value);
   };
 

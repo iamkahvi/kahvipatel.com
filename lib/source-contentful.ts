@@ -28,7 +28,7 @@ const BOOK_SHELF_DATA_QUERY = `
 
 const RENDER_OPTIONS = {
   renderNode: {
-    [INLINES.HYPERLINK]: (node, next) => {
+    [INLINES.HYPERLINK]: (node: any, next: any) => {
       const href = typeof node.data.uri === "string" ? node.data.uri : "";
       const url = new URL(href);
 
@@ -87,7 +87,7 @@ export async function getBookShelfData(): Promise<BookShelfData> {
   const introHtml = documentToHtmlString(intro.json, RENDER_OPTIONS);
 
   const books: BookNode[] = data.bookShelf.bookListCollection.items.map(
-    (bookItem) => {
+    (bookItem: any) => {
       const {
         bookTitle: title,
         bookAuthor: author,

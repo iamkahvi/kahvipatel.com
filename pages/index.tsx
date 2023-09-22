@@ -5,7 +5,7 @@ import { siteMetadata } from "../site_metadata";
 import { GetStaticProps } from "next";
 import { getBlogPostEntries, BlogPostEntry } from "../lib/source-markdown";
 
-import { CURR_YEAR_STRING } from "./utils";
+import { CURR_YEAR_STRING } from "../lib/utils";
 
 export default function App({ posts }: { posts: BlogPostEntry[] }) {
   const [search, setSearch] = useState("");
@@ -13,7 +13,7 @@ export default function App({ posts }: { posts: BlogPostEntry[] }) {
   const siteTitle = siteMetadata.title;
   const description = siteMetadata.description;
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     setSearch(e.target.value);
     // if (e.target.value.toLowerCase() === "mama") {
     //   navigate("/mothersday", { state: { isAuth: true } });

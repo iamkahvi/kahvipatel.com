@@ -26,7 +26,7 @@ function Layout(props: LayoutProps) {
 
   const audioIcon = (
     <svg
-      onClick={() => audio.current.play()}
+      onClick={() => (audio.current as any).play()}
       className="ml3"
       width="660"
       height="660"

@@ -11,6 +11,7 @@ function SEO({ title, description }: SEOProps) {
   const metaDescription = description || siteMetadata.description;
 
   return (
+    // @ts-ignore
     <Helmet
       htmlAttributes={{
         lang: "en",

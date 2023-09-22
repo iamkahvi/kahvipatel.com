@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { themeMap } from "./colorThemes.mjs";
 
 export enum Themes {
@@ -19,7 +19,9 @@ interface Return {
 
 export const useTheme = (): Return => {
   const colorPref =
+    // @ts-ignore
     typeof window !== "undefined" &&
+    // @ts-ignore
     (window.localStorage.getItem("color-theme") as Themes);
   const hasPref = typeof colorPref === "string";
 
@@ -29,6 +31,7 @@ export const useTheme = (): Return => {
 
   const setTheme = (theme?: Themes) => {
     const t = theme ?? randTheme(currTheme);
+    // @ts-ignore
     window.localStorage.setItem("color-theme", t);
     setCurrTheme(t);
     setRootStyles(t);
@@ -38,6 +41,7 @@ export const useTheme = (): Return => {
 };
 
 const setRootStyles = (theme: Themes) => {
+  // @ts-ignore
   const root = document.documentElement;
   Object.entries(themeMap[theme]).forEach((val) => {
     const [k, v] = val;

@@ -3,9 +3,7 @@ import { join, parse } from "node:path";
 import matter from "gray-matter";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
-import remarkRehype from "remark-rehype";
-import rehypeFormat from "rehype-format";
-import rehypeStringify from "rehype-stringify";
+import remarkHtml from "remark-html";
 
 import { getDateFormats } from "./utils";
 
@@ -24,14 +22,7 @@ export async function getAboutPageData(): Promise<AboutPageData> {
   const { data, content } = matter(text);
   const { title } = data;
 
-  const html = String(
-    await unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeFormat)
-      .use(rehypeStringify)
-      .process(content)
-  );
+  const html = await markdownToHtml(content);
 
   return {
     title,
@@ -55,16 +46,9 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
   const text = await file.text();
 
   const { data, content } = matter(text);
-  const { title, date, description } = data;
+  const { title, date, description = "" } = data;
 
-  const html = String(
-    await unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeFormat)
-      .use(rehypeStringify)
-      .process(content)
-  );
+  const html = await markdownToHtml(content);
 
   const { year, displayDate, displayDateSmall } = getDateFormats(date);
 
@@ -100,7 +84,13 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
       const text = await file.text();
 
       const frontMatter = matter(text);
-      const { title, date, description, layout, published } = frontMatter.data;
+      const {
+        title,
+        date,
+        description = "",
+        layout,
+        published,
+      } = frontMatter.data;
 
       if (layout !== "post" || published === false) return [];
 
@@ -113,7 +103,7 @@ export async function getBlogPostEntries(): Promise<BlogPostEntry[]> {
           date,
           displayDate,
           displayDateSmall,
-          description: description || "",
+          description: description,
           slug: parse(path).name,
         },
       ];
@@ -206,14 +196,7 @@ export async function getMarkdownHighlight(
   const { data, content } = matter(text);
   const { title, date } = data;
 
-  const html = String(
-    await unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeFormat)
-      .use(rehypeStringify)
-      .process(content)
-  );
+  const html = await markdownToHtml(content);
 
   const { displayDate, displayDateSmall } = getDateFormats(date);
 
@@ -261,4 +244,11 @@ export async function getJsonHighlight(
     displayDateSmall,
     highlights: json,
   };
+}
+
+async function markdownToHtml(markdown: string): Promise<string> {
+  return String(
+    // @ts-ignore
+    await unified().use(remarkParse).use(remarkHtml).process(markdown)
+  );
 }
