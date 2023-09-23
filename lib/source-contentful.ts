@@ -1,6 +1,10 @@
-import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import {
+  documentToHtmlString,
+  Options,
+} from "@contentful/rich-text-html-renderer";
 import { INLINES } from "@contentful/rich-text-types";
 import { getDateFormats } from "./utils";
+import { BookListItem, Query } from "./contentful-types";
 
 const attributeValue = (value: string) => `"${value.replace(/"/g, "&quot;")}"`;
 const HOSTNAME = "kahvipatel.com";
@@ -26,9 +30,9 @@ const BOOK_SHELF_DATA_QUERY = `
 }
 `;
 
-const RENDER_OPTIONS = {
+const RENDER_OPTIONS: Options = {
   renderNode: {
-    [INLINES.HYPERLINK]: (node: any, next: any) => {
+    [INLINES.HYPERLINK]: (node, next) => {
       const href = typeof node.data.uri === "string" ? node.data.uri : "";
       const url = new URL(href);
 
@@ -45,7 +49,7 @@ const RENDER_OPTIONS = {
 export async function fetchGraphQL(
   query: string,
   preview = false
-): Promise<any> {
+): Promise<{ data: Query }> {
   const response = await fetch(
     `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`,
     {
@@ -83,11 +87,11 @@ export interface BookNode {
 export async function getBookShelfData(): Promise<BookShelfData> {
   const { data } = await fetchGraphQL(BOOK_SHELF_DATA_QUERY);
 
-  const { title, intro } = data.bookShelf;
-  const introHtml = documentToHtmlString(intro.json, RENDER_OPTIONS);
+  const { title, intro, bookListCollection } = data.bookShelf!;
+  const introHtml = documentToHtmlString(intro!.json, RENDER_OPTIONS);
 
-  const books: BookNode[] = data.bookShelf.bookListCollection.items.map(
-    (bookItem: any) => {
+  const books = (bookListCollection!.items as BookListItem[]).map(
+    (bookItem) => {
       const {
         bookTitle: title,
         bookAuthor: author,
@@ -97,7 +101,7 @@ export async function getBookShelfData(): Promise<BookShelfData> {
 
       const { year, displayDate } = getDateFormats(dateFinished, "DD/MM/YYYY");
       const descriptionHtml = documentToHtmlString(
-        bookDescription.json,
+        bookDescription!.json,
         RENDER_OPTIONS
       );
 
@@ -107,12 +111,12 @@ export async function getBookShelfData(): Promise<BookShelfData> {
         dateFinished: displayDate,
         descriptionHtml,
         year,
-      };
+      } as BookNode;
     }
   );
 
   return {
-    title,
+    title: title!,
     introHtml,
     books,
   };

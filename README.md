@@ -14,3 +14,7 @@ To run:
 ```bash
 bun run dev
 ```
+
+https://graphql.contentful.com/content/v1/spaces/{SPACE_ID}
+
+https://graphql.contentful.com/content/v1/spaces/{SPACE_ID}/explore?access_token={ACCESS_TOKEN}

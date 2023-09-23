@@ -1,8 +1,8 @@
-import React from "react";
+import { ChangeEvent } from "react";
 
 interface searchBarProps {
   placeholderText: string;
-  handleSearch: (e: any) => void;
+  handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
   searchVal: string;
   isSticky: boolean;
 }

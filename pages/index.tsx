@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import Link from "next/link";
 import { Layout, SearchBar, SEO, BookListLogo } from "../components";
 import { siteMetadata } from "../site_metadata";
@@ -13,7 +13,7 @@ export default function App({ posts }: { posts: BlogPostEntry[] }) {
   const siteTitle = siteMetadata.title;
   const description = siteMetadata.description;
 
-  const handleSearch = (e: any) => {
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     // if (e.target.value.toLowerCase() === "mama") {
     //   navigate("/mothersday", { state: { isAuth: true } });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { Layout, SEO, SearchBar } from "../components";
 import {
   getBookShelfData,
@@ -13,7 +13,7 @@ export default function BookList({ bookShelf }: { bookShelf: BookShelfData }) {
 
   const { books, introHtml, title } = bookShelf;
 
-  const handleSearch = (e: any) => {
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
