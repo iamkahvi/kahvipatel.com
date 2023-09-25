@@ -4,10 +4,28 @@ import {
 } from "@contentful/rich-text-html-renderer";
 import { INLINES } from "@contentful/rich-text-types";
 import { getDateFormats } from "./utils";
-import { BookListItem, Query } from "./contentful-types";
 
 const attributeValue = (value: string) => `"${value.replace(/"/g, "&quot;")}"`;
 const HOSTNAME = "kahvipatel.com";
+
+export type BookShelf = {
+  title: string;
+  intro: {
+    json: any;
+  };
+  bookListCollection: {
+    items: BookListItem[];
+  };
+};
+
+export type BookListItem = {
+  bookTitle: string;
+  bookAuthor: string;
+  dateFinished: string;
+  bookDescription: {
+    json: any;
+  };
+};
 
 const BOOK_SHELF_DATA_QUERY = `
 {
@@ -46,10 +64,16 @@ const RENDER_OPTIONS: Options = {
   },
 };
 
+type QueryResponse = {
+  data: {
+    bookShelf: BookShelf;
+  };
+};
+
 export async function fetchGraphQL(
   query: string,
   preview = false
-): Promise<{ data: Query }> {
+): Promise<QueryResponse> {
   const response = await fetch(
     `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`,
     {
