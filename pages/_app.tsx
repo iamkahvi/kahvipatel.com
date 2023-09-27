@@ -3,6 +3,7 @@ import "../styles/imports.css";
 import "../styles/links.scss";
 import "../styles/style.scss";
 import "../styles/tachyons.min.css";
+import "../styles/default.min.css";
 import hljs from "highlight.js";
 import { useEffect } from "react";
 
