@@ -73,6 +73,7 @@ export default function App({ posts }: { posts: BlogPostEntry[] }) {
       <iframe
         src="https://www.newsletter.kahvipatel.com/embed"
         className="w-100 br3 h-100 bn"
+        loading="lazy"
       ></iframe>
     </div>
   );
