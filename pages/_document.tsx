@@ -46,6 +46,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
+        <script async={true} src="../lib/prism.js" />
       </body>
     </Html>
   );

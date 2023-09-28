@@ -14,6 +14,7 @@ export default function App({ posts }: { posts: BlogPostEntry[] }) {
   const description = siteMetadata.description;
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    // @ts-ignore
     setSearch(e.target.value);
     // if (e.target.value.toLowerCase() === "mama") {
     //   navigate("/mothersday", { state: { isAuth: true } });

@@ -14,9 +14,8 @@
     "@types/react": "^18.2.21",
     "@types/react-helmet": "^6.1.6",
     "gray-matter": "^4.0.3",
-    "highlight.js": "^11.8.0",
     "moment": "^2.29.4",
-    "next": "^13.4.19",
+    "next": "^13.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
@@ -30,7 +29,8 @@
     "@types/node": "20.6.2",
     "bun-types": "latest",
     "sass": "^1.67.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "@next/bundle-analyzer": "^13.5.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
