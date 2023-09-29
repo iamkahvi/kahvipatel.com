@@ -19,6 +19,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
+    "react-markdown": "^9.0.0",
+    "react-syntax-highlighter": "^15.5.0",
     "remark-html": "^15.0.2",
     "remark-parse": "^10.0.2",
     "unified": "^11.0.3"
@@ -27,6 +29,7 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "20.6.2",
+    "@types/react-syntax-highlighter": "^15.5.7",
     "bun-types": "latest",
     "sass": "^1.67.0",
     "serve": "latest",

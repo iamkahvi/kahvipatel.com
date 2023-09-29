@@ -1,11 +1,13 @@
 import React from "react";
+import Markdown from "react-markdown";
+
 import Layout from "../components/layout";
 import SEO from "../components/seo";
 import { GetStaticProps } from "next";
 import { getAboutPageData, AboutPageData } from "../lib/source-markdown";
 
 export default function BlogAbout(props: AboutPageData) {
-  const { title, html } = props;
+  const { title, markdown } = props;
 
   return (
     <Layout title={title}>
@@ -17,7 +19,16 @@ export default function BlogAbout(props: AboutPageData) {
           src="/assets/profile.jpg"
           alt="Headshot Photo"
         ></img>
-        <div className="textBody" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="textBody">
+          <Markdown
+            children={markdown}
+            components={{
+              a(props: any) {
+                return <a href="google.com">hello</a>;
+              },
+            }}
+          />
+        </div>
       </div>
     </Layout>
   );
