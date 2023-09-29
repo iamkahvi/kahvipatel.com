@@ -42,6 +42,8 @@ export default function Document() {
     <Html>
       <Head>
         <script dangerouslySetInnerHTML={{ __html: codeToSetStyles }} />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"></script>
+        <script>Prism.highlightAll();</script>
       </Head>
       <body>
         <Main />
