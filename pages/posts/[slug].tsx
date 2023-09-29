@@ -1,9 +1,9 @@
+import { Layout, SEO } from "../../components";
 import {
-  getBlogPost,
   BlogPost,
+  getBlogPost,
   getBlogPostEntries,
 } from "../../lib/source-markdown";
-import { Layout, SEO } from "../../components";
 import { siteMetadata } from "../../site_metadata";
 
 type Props = { post: BlogPost };
@@ -34,7 +34,6 @@ type StaticProps = { params: { slug: string } };
 
 export async function getStaticProps({ params }: StaticProps) {
   const post = await getBlogPost(params.slug);
-
   return {
     props: {
       post,

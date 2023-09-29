@@ -6,7 +6,7 @@
     "dev": "next",
     "build": "next build",
     "start": "serve out",
-    "build:static": "next build && next out"
+    "build:start": "next build && next start"
   },
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^16.1.2",
@@ -29,6 +29,7 @@
     "@types/node": "20.6.2",
     "bun-types": "latest",
     "sass": "^1.67.0",
+    "serve": "latest",
     "typescript": "5.2.2"
   },
   "peerDependencies": {
