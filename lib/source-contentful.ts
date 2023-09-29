@@ -73,7 +73,7 @@ type QueryResponse = {
 export async function fetchGraphQL(
   query: string,
   preview = false
-): Promise<QueryResponse> {
+): Promise<any | null> {
   const response = await fetch(
     `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`,
     {
@@ -91,7 +91,13 @@ export async function fetchGraphQL(
     }
   );
 
-  return await response.json();
+  const json = await response.json();
+
+  if (response.ok) {
+    return json;
+  }
+
+  throw Error(JSON.stringify(json));
 }
 
 export interface BookShelfData {
