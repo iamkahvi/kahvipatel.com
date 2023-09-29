@@ -12,27 +12,25 @@ const ABOUT_PATH = join(process.cwd(), "content/about/about.md");
 
 export interface AboutPageData {
   title: string;
-  html: string;
+  markdown: string;
 }
 
 export async function getAboutPageData(): Promise<AboutPageData> {
   const file = Bun.file(ABOUT_PATH);
   const text = await file.text();
 
-  const { data, content } = matter(text);
+  const { data, content: markdown } = matter(text);
   const { title } = data;
-
-  const html = await markdownToHtml(content);
 
   return {
     title,
-    html,
+    markdown,
   };
 }
 
 export interface BlogPost {
   title: string;
-  html: string;
+  markdown: string;
   frontmatter: {
     year: string;
     displayDate: string;
@@ -45,16 +43,14 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
   const file = Bun.file(join(POSTS_PATH, slug + ".md"));
   const text = await file.text();
 
-  const { data, content } = matter(text);
+  const { data, content: markdown } = matter(text);
   const { title, date, description = "" } = data;
-
-  const html = await markdownToHtml(content);
 
   const { year, displayDate, displayDateSmall } = getDateFormats(date);
 
   return {
     title,
-    html,
+    markdown,
     frontmatter: {
       year,
       displayDate,
@@ -184,7 +180,7 @@ export interface HighlightPostMarkdown {
   title: string;
   displayDate: string;
   displayDateSmall: string;
-  html: string;
+  markdown: string;
 }
 
 export async function getMarkdownHighlight(
@@ -193,16 +189,14 @@ export async function getMarkdownHighlight(
   const file = Bun.file(join(MD_HIGHLIGHTS_PATH, slug));
   const text = await file.text();
 
-  const { data, content } = matter(text);
+  const { data, content: markdown } = matter(text);
   const { title, date } = data;
-
-  const html = await markdownToHtml(content);
 
   const { displayDate, displayDateSmall } = getDateFormats(date);
 
   return {
     title,
-    html,
+    markdown,
     displayDate,
     displayDateSmall,
   };
@@ -244,11 +238,4 @@ export async function getJsonHighlight(
     displayDateSmall,
     highlights: json,
   };
-}
-
-async function markdownToHtml(markdown: string): Promise<string> {
-  return String(
-    // @ts-ignore
-    await unified().use(remarkParse).use(remarkHtml).process(markdown)
-  );
 }

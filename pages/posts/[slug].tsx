@@ -1,3 +1,6 @@
+import Markdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { prism } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Layout, SEO } from "../../components";
 import {
   BlogPost,
@@ -9,7 +12,7 @@ import { siteMetadata } from "../../site_metadata";
 type Props = { post: BlogPost };
 
 export default function BlogPostTemplate({ post }: Props) {
-  const { title, html, frontmatter } = post;
+  const { title, markdown, frontmatter } = post;
   const { displayDate, displayDateSmall, description } = frontmatter;
   const siteTitle = siteMetadata.title;
 
@@ -25,7 +28,31 @@ export default function BlogPostTemplate({ post }: Props) {
           {displayDate}
         </p>
       </header>
-      <div className="textBody" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="textBody">
+        <Markdown
+          children={markdown}
+          components={{
+            code(props: any) {
+              const { children, className, node, ...rest } = props;
+              const match = /language-(\w+)/.exec(className || "");
+              return match ? (
+                // @ts-ignore
+                <SyntaxHighlighter
+                  {...rest}
+                  children={String(children).replace(/\n$/, "")}
+                  style={prism}
+                  language={match[1]}
+                  className="br3"
+                />
+              ) : (
+                <code {...rest} className={className}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        />
+      </div>
     </Layout>
   );
 }
