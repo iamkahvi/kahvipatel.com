@@ -14,6 +14,7 @@ export default function BookList({ bookShelf }: { bookShelf: BookShelfData }) {
   const { books, introHtml, title } = bookShelf;
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    // @ts-ignore
     setSearch(e.target.value);
   };
 
