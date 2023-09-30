@@ -64,12 +64,6 @@ const RENDER_OPTIONS: Options = {
   },
 };
 
-type QueryResponse = {
-  data: {
-    bookShelf: BookShelf;
-  };
-};
-
 export async function fetchGraphQL(
   query: string,
   preview = false

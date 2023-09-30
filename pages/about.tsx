@@ -23,8 +23,12 @@ export default function BlogAbout(props: AboutPageData) {
           <Markdown
             children={markdown}
             components={{
-              a(props: any) {
-                return <a href="google.com">hello</a>;
+              a({ href, children }) {
+                return (
+                  <a href={href} target="_blank">
+                    {children}
+                  </a>
+                );
               },
             }}
           />
