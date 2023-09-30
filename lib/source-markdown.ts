@@ -1,9 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { join, parse } from "node:path";
 import matter from "gray-matter";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkHtml from "remark-html";
 
 import { getDateFormats } from "./utils";
 
