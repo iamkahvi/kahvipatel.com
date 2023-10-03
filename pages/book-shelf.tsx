@@ -37,7 +37,7 @@ export default function BookList({ bookShelf }: { bookShelf: BookShelfData }) {
       <div key={idLink}>
         {prevYear !== year && <h2 className="f4 underline">{yearMap(year)}</h2>}
         <li id={idLink} className="book mb4">
-          <div className="mb2">
+          <div className="book title mb2">
             <a
               className="book anchor c-second b"
               href={`/book-shelf#${idLink}`}

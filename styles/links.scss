@@ -6,13 +6,18 @@ $bp__sm: 45rem; // 450px
 // Misc
 $m-border: 1px solid var(--c-third);
 
+.book .title {
+  color: var(--c-main);
+}
+
 .book .anchor {
+  color: var(--c-main);
   float: left;
   padding-right: 4px;
   margin: 0;
   &:hover {
     display: block;
-    color: var(--c-second);
+    color: var(--c-main);
     text-decoration: underline;
 
     &::after {
